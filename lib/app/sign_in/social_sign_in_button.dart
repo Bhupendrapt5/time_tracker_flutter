@@ -5,10 +5,12 @@ class SocialSignInButton extends CustomRaisedButton {
   SocialSignInButton({
     @required String logoPath,
     @required String text,
-    @required Color color,
-    @required Color textColor,
-    @required VoidCallback onPressed,
-  }) : super(
+    Color color,
+    Color textColor,
+    VoidCallback onPressed,
+  })  : assert(text != null),
+        assert(logoPath != null),
+        super(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [

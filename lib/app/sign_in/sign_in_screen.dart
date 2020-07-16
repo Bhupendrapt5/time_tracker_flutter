@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:time_tracker/app/custom_widgts/custom_raised_button.dart';
 import 'package:time_tracker/app/sign_in/sign_in_button.dart';
 import 'package:time_tracker/app/sign_in/social_sign_in_button.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class SignInScreen extends StatelessWidget {
+  final _firebaseInstance = FirebaseAuth.instance;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -87,22 +88,19 @@ class SignInScreen extends StatelessWidget {
   }
 
   void _signInWithGoogle() {
-    //TODO: Implement Google Sign-In
     print('Google Sign In');
   }
 
   void _signInWithFaceBook() {
-    //TODO: Implement Facebook Sign-In
     print('Facebook Sign In');
   }
 
   void _signInWithEmail() {
-    //TODO: Implement Google Sign-In
     print('Email Sign In');
   }
 
-  void _signInAnonymous() {
-    //TODO: Implement Google Sign-In
-    print('Anonymous Sign In');
+  void _signInAnonymous() async {
+    final authResult = await _firebaseInstance.signInAnonymously();
+    print('Anonymous ${authResult.user.uid}');
   }
 }
