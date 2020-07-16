@@ -4,7 +4,11 @@ import 'package:time_tracker/app/sign_in/social_sign_in_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class SignInScreen extends StatelessWidget {
+  final Function(FirebaseUser) onSignIn;
+  SignInScreen({Key key, @required this.onSignIn}) : super(key: key);
+
   final _firebaseInstance = FirebaseAuth.instance;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -99,8 +103,13 @@ class SignInScreen extends StatelessWidget {
     print('Email Sign In');
   }
 
-  void _signInAnonymous() async {
-    final authResult = await _firebaseInstance.signInAnonymously();
-    print('Anonymous ${authResult.user.uid}');
+  Future<void> _signInAnonymous() async {
+    try {
+      final authResult = await _firebaseInstance.signInAnonymously();
+      onSignIn(authResult.user);
+      print('Anonymous ${authResult.user.uid}');
+    } catch (e) {
+      print('Error:  ${e.toString()}');
+    }
   }
 }
