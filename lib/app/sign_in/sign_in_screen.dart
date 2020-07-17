@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:time_tracker/app/sign_in/sign_in_button.dart';
+import 'package:time_tracker/app/services/auth.dart';
 import 'package:time_tracker/app/sign_in/social_sign_in_button.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 class SignInScreen extends StatelessWidget {
-  final Function(FirebaseUser) onSignIn;
-  SignInScreen({Key key, @required this.onSignIn}) : super(key: key);
+  final Function(User) onSignIn;
+  final AuthBase autBase;
+  SignInScreen({
+    Key key,
+    @required this.onSignIn,
+    @required this.autBase,
+  }) : super(key: key);
 
-  final _firebaseInstance = FirebaseAuth.instance;
+  // final _firebaseInstance = FirebaseAuth.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -105,9 +110,9 @@ class SignInScreen extends StatelessWidget {
 
   Future<void> _signInAnonymous() async {
     try {
-      final authResult = await _firebaseInstance.signInAnonymously();
-      onSignIn(authResult.user);
-      print('Anonymous ${authResult.user.uid}');
+      final authUser = await autBase.signInAnonymously();
+      onSignIn(authUser);
+      print('Anonymous ${authUser.uId}');
     } catch (e) {
       print('Error:  ${e.toString()}');
     }
