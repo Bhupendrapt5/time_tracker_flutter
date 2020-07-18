@@ -2,15 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:time_tracker/app/services/auth.dart';
 
 class HomePageScreen extends StatelessWidget {
-  final VoidCallback onSignOut;
+
   final AuthBase autBase;
 
-  const HomePageScreen({Key key, @required this.onSignOut, @required this.autBase})
+  const HomePageScreen({Key key, @required this.autBase})
       : super(key: key);
   Future<void> _signOut() async {
     try {
       await autBase.signOut();
-      onSignOut();
       print('Sign out called');
     } catch (e) {
       print('error : ${e.toString()}');

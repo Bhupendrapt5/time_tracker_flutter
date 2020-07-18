@@ -4,11 +4,9 @@ import 'package:time_tracker/app/services/auth.dart';
 import 'package:time_tracker/app/sign_in/social_sign_in_button.dart';
 
 class SignInScreen extends StatelessWidget {
-  final Function(User) onSignIn;
   final AuthBase autBase;
   SignInScreen({
     Key key,
-    @required this.onSignIn,
     @required this.autBase,
   }) : super(key: key);
 
@@ -110,8 +108,7 @@ class SignInScreen extends StatelessWidget {
 
   Future<void> _signInAnonymous() async {
     try {
-      final authUser = await autBase.signInAnonymously();
-      onSignIn(authUser);
+      await autBase.signInAnonymously();
     } catch (e) {
       print('Error:  ${e.toString()}');
     }
