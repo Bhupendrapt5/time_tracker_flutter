@@ -29,7 +29,7 @@ class _LandingPageState extends State<LandingPage> {
   @override
   void initState() {
     _getUser();
-    widget.autBase.onAuthStateChange.listen((user) { 
+    widget.autBase.onAuthStateChange.listen((user) {
       print('user : ${user?.uId}');
     });
     super.initState();
@@ -37,15 +37,31 @@ class _LandingPageState extends State<LandingPage> {
 
   @override
   Widget build(BuildContext context) {
-    if (_user == null)
-      return SignInScreen(
-        autBase: widget.autBase,
-        onSignIn: _updateUser,
-      );
+    return StreamBuilder<User>(
+      stream: widget.autBase.onAuthStateChange,
+      builder: (ctx, snapshot) {
+        if (snapshot.hasData) {
+          User user = snapshot.data;
+          print('user name ; ${user.uId}');
+          if (user == null) {
+            return SignInScreen(
+              autBase: widget.autBase,
+              onSignIn: _updateUser,
+            );
+          }
 
-    return HomePageScreen(
-      autBase: widget.autBase,
-      onSignOut: () => _updateUser(null),
+          return HomePageScreen(
+            autBase: widget.autBase,
+            onSignOut: () => _updateUser(null),
+          );
+        } else {
+          return Scaffold(
+            body: Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
+        }
+      },
     );
   }
 }

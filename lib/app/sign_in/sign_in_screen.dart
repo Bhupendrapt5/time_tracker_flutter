@@ -112,7 +112,6 @@ class SignInScreen extends StatelessWidget {
     try {
       final authUser = await autBase.signInAnonymously();
       onSignIn(authUser);
-      print('Anonymous ${authUser.uId}');
     } catch (e) {
       print('Error:  ${e.toString()}');
     }
