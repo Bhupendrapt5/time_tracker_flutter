@@ -13,9 +13,9 @@ class LandingPage extends StatelessWidget {
     return StreamBuilder<User>(
       stream: autBase.onAuthStateChange,
       builder: (ctx, snapshot) {
-        if (snapshot.hasData) {
+        if (snapshot.connectionState == ConnectionState.active) {
           User user = snapshot.data;
-          print('user name ; ${user.uId}');
+          print('user name ; ${user?.uId}');
           if (user == null) {
             return SignInScreen(
               autBase: autBase,
