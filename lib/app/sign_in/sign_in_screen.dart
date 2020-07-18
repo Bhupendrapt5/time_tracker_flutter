@@ -94,8 +94,13 @@ class SignInScreen extends StatelessWidget {
     );
   }
 
-  void _signInWithGoogle() {
-    print('Google Sign In');
+  void _signInWithGoogle() async {
+    try {
+      await autBase.signInWithGoogle();
+      print('Google Sign In');
+    } catch (e) {
+      print('Error:  ${e.toString()}');
+    }
   }
 
   void _signInWithFaceBook() {
