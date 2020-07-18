@@ -29,6 +29,9 @@ class _LandingPageState extends State<LandingPage> {
   @override
   void initState() {
     _getUser();
+    widget.autBase.onAuthStateChange.listen((user) { 
+      print('user : ${user?.uId}');
+    });
     super.initState();
   }
 
