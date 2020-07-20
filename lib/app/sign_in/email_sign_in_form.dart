@@ -1,10 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:time_tracker/app/custom_widgts/form_submit_raised_button.dart';
 
-class EmailSignInForm extends StatelessWidget {
+enum EmailSignInFormType {
+  SignIn,
+  SignUp,
+}
+
+class EmailSignInForm extends StatefulWidget {
+  @override
+  _EmailSignInFormState createState() => _EmailSignInFormState();
+}
+
+class _EmailSignInFormState extends State<EmailSignInForm> {
+  EmailSignInFormType _formType = EmailSignInFormType.SignIn;
   List<Widget> _buildChildern() {
+    final _primaryText = _formType == EmailSignInFormType.SignIn
+        ? 'Sign In'
+        : 'Create an account ';
+    final _secondaryText = _formType == EmailSignInFormType.SignIn
+        ? 'Need an account? Register'
+        : 'Have an account? Sign In';
     return [
       TextField(
+        controller: _emailController,
         decoration: InputDecoration(
           labelText: 'Email',
           hintText: 'test@test.com',
@@ -14,6 +32,7 @@ class EmailSignInForm extends StatelessWidget {
         height: 8,
       ),
       TextField(
+        controller: _passwordController,
         decoration: InputDecoration(
           labelText: 'Password',
         ),
@@ -23,18 +42,22 @@ class EmailSignInForm extends StatelessWidget {
         height: 16,
       ),
       FormSubmitRaisedButton(
-        onPressed: () {},
-        text: 'Sign In',
+        onPressed: _submit,
+        text: _primaryText,
       ),
       SizedBox(
         height: 8,
       ),
       FlatButton(
-        onPressed: () {},
-        child: Text('Need an account? Register'),
+        onPressed: _toggleFrom,
+        child: Text(_secondaryText),
       )
     ];
   }
+
+  final _emailController = TextEditingController();
+
+  final _passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -46,5 +69,20 @@ class EmailSignInForm extends StatelessWidget {
         children: _buildChildern(),
       ),
     );
+  }
+
+  void _submit() {
+    print('email : ${_emailController.text}');
+  }
+
+  void _toggleFrom() {
+    setState(() {
+      _formType = _formType == EmailSignInFormType.SignIn
+          ? EmailSignInFormType.SignUp
+          : EmailSignInFormType.SignIn;
+    });
+
+    _emailController.clear();
+    _passwordController.clear();
   }
 }
