@@ -25,23 +25,11 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
         ? 'Need an account? Register'
         : 'Have an account? Sign In';
     return [
-      TextField(
-        controller: _emailController,
-        decoration: InputDecoration(
-          labelText: 'Email',
-          hintText: 'test@test.com',
-        ),
-      ),
+      _emailTextField(),
       SizedBox(
         height: 8,
       ),
-      TextField(
-        controller: _passwordController,
-        decoration: InputDecoration(
-          labelText: 'Password',
-        ),
-        obscureText: true,
-      ),
+      _passwrodTextField(),
       SizedBox(
         height: 16,
       ),
@@ -59,9 +47,35 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
     ];
   }
 
+  TextField _passwrodTextField() {
+    return TextField(
+      controller: _passwordController,
+      decoration: InputDecoration(
+        labelText: 'Password',
+      ),
+      textInputAction: TextInputAction.done,
+      obscureText: true,
+    );
+  }
+
+  TextField _emailTextField() {
+    return TextField(
+      controller: _emailController,
+      decoration: InputDecoration(
+        labelText: 'Email',
+        hintText: 'test@test.com',
+      ),
+      keyboardType: TextInputType.emailAddress,
+      textInputAction: TextInputAction.next,
+      autocorrect: false,
+    );
+  }
+
   final _emailController = TextEditingController();
 
   final _passwordController = TextEditingController();
+  String get _email => _emailController.text;
+  String get _password => _passwordController.text;
 
   @override
   Widget build(BuildContext context) {
@@ -75,8 +89,25 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
     );
   }
 
-  void _submit() {
-    print('email : ${_emailController.text}');
+  void _submit() async {
+    try {
+      if (_formType == EmailSignInFormType.SignIn) {
+        await widget.auth.signInWithEmail(
+          _email,
+          _password,
+        );
+      } else {
+        await widget.auth.createUser(
+          _email,
+          _password,
+        );
+      }
+      Navigator.pop(context);
+    } catch (err) {
+      print('$err');
+    }
+    print('email : $_email');
+    print('pass : $_password');
   }
 
   void _toggleFrom() {
