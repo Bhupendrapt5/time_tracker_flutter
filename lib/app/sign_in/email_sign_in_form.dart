@@ -1,22 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:time_tracker/app/custom_widgts/form_submit_raised_button.dart';
 import 'package:time_tracker/app/services/auth.dart';
+import 'package:time_tracker/app/sign_in/validators.dart';
 
 enum EmailSignInFormType {
   SignIn,
   SignUp,
 }
 
-class EmailSignInForm extends StatefulWidget {
+class EmailSignInForm extends StatefulWidget
+    with EmailAndPasswordNonEmptyValidator {
   final AuthBase auth;
 
-  const EmailSignInForm({Key key, this.auth}) : super(key: key);
+  EmailSignInForm({Key key, this.auth}) : super(key: key);
   @override
   _EmailSignInFormState createState() => _EmailSignInFormState();
 }
 
 class _EmailSignInFormState extends State<EmailSignInForm> {
   EmailSignInFormType _formType = EmailSignInFormType.SignIn;
+  String get _email => _emailController.text;
+  String get _password => _passwordController.text;
+  bool _formSubmited = false;
+
   List<Widget> _buildChildern() {
     final _primaryText = _formType == EmailSignInFormType.SignIn
         ? 'Sign In'
@@ -24,6 +30,10 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
     final _secondaryText = _formType == EmailSignInFormType.SignIn
         ? 'Need an account? Register'
         : 'Have an account? Sign In';
+
+    _submitEnabled = widget.emailValidator.isValid(_email) &&
+        widget.passwordValidator.isValid(_password) &&
+        !_formSubmited;
     return [
       _emailTextField(),
       SizedBox(
@@ -34,14 +44,14 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
         height: 16,
       ),
       FormSubmitRaisedButton(
-        onPressed: _submit,
+        onPressed: _submitEnabled ? _submit : null,
         text: _primaryText,
       ),
       SizedBox(
         height: 8,
       ),
       FlatButton(
-        onPressed: _toggleFrom,
+        onPressed: !_formSubmited ? _toggleFrom : null,
         child: Text(_secondaryText),
       )
     ];
@@ -56,23 +66,29 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
       ),
       textInputAction: TextInputAction.done,
       obscureText: true,
+      onChanged: (value) => updateSubmiButton(),
+      onEditingComplete: _submit,
     );
   }
 
   TextField _emailTextField() {
     return TextField(
-      controller: _emailController,
-      focusNode: _emailFocusNode,
-      decoration: InputDecoration(
-        labelText: 'Email',
-        hintText: 'test@test.com',
-      ),
-      keyboardType: TextInputType.emailAddress,
-      textInputAction: TextInputAction.next,
-      autocorrect: false,
-      onEditingComplete: () =>
-          FocusScope.of(context).requestFocus(_passwordFocusNode),
-    );
+        controller: _emailController,
+        focusNode: _emailFocusNode,
+        decoration: InputDecoration(
+          labelText: 'Email',
+          hintText: 'test@test.com',
+        ),
+        keyboardType: TextInputType.emailAddress,
+        textInputAction: TextInputAction.next,
+        autocorrect: false,
+        onChanged: (value) => updateSubmiButton(),
+        onEditingComplete: () {
+          final _newFocus = widget.emailValidator.isValid(_email)
+              ? _passwordFocusNode
+              : _emailFocusNode;
+          FocusScope.of(context).requestFocus(_newFocus);
+        });
   }
 
   final _emailController = TextEditingController();
@@ -80,9 +96,7 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
   final _passwordController = TextEditingController();
   final FocusNode _emailFocusNode = FocusNode();
   final FocusNode _passwordFocusNode = FocusNode();
-  String get _email => _emailController.text;
-  String get _password => _passwordController.text;
-
+  bool _submitEnabled = false;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -96,6 +110,11 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
   }
 
   void _submit() async {
+    print('email : $_email');
+
+    setState(() {
+      _formSubmited = true;
+    });
     try {
       if (_formType == EmailSignInFormType.SignIn) {
         await widget.auth.signInWithEmail(
@@ -111,9 +130,15 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
       Navigator.pop(context);
     } catch (err) {
       print('$err');
+    } finally {
+      setState(() {
+        _formSubmited = false;
+      });
     }
-    print('email : $_email');
-    print('pass : $_password');
+  }
+
+  void updateSubmiButton() {
+    setState(() {});
   }
 
   void _toggleFrom() {
