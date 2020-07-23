@@ -15,10 +15,8 @@ class LandingPage extends StatelessWidget {
       builder: (ctx, snapshot) {
         if (snapshot.connectionState == ConnectionState.active) {
           User user = snapshot.data;
-          print('user id ; ${user?.uId}');
           print('user name ; ${user?.displayName??'anon'}');
           print('user email ; ${user?.email??'anon'}');
-          print('user ph ; ${user?.phoneNumber??'anon'}');
           if (user == null) {
             return SignInScreen(
               autBase: autBase,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:time_tracker/app/custom_widgts/form_submit_raised_button.dart';
+import 'package:time_tracker/app/custom_widgts/platform_alert_dialog.dart';
 import 'package:time_tracker/app/services/auth.dart';
 import 'package:time_tracker/app/sign_in/validators.dart';
 
@@ -129,7 +130,11 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
       }
       Navigator.pop(context);
     } catch (err) {
-      print('$err');
+      PlatFormAlertDialogBox(
+        title: 'Sign In Failed',
+        content: 'Something went wrong',
+        defaultActionText: 'Ok',
+      ).show(context);
     } finally {
       setState(() {
         _formSubmited = false;
