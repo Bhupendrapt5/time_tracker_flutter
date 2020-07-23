@@ -8,11 +8,13 @@ class PlatFormAlertDialogBox extends PlatformWidet {
   final String title;
   final String content;
   final String defaultActionText;
+  final String cancelActionText;
 
   PlatFormAlertDialogBox({
     @required this.title,
     @required this.content,
     @required this.defaultActionText,
+    this.cancelActionText,
   })  : assert(title != null),
         assert(content != null),
         assert(defaultActionText != null);
@@ -49,12 +51,26 @@ class PlatFormAlertDialogBox extends PlatformWidet {
   }
 
   List<Widget> _buildWidget(BuildContext context) {
-    return [
+    final actions = <Widget>[];
+    if (cancelActionText != null) {
+      actions.add(
+        PlatformAlertDialogAction(
+          callback: () => Navigator.pop(context, false),
+          widget: Text(cancelActionText),
+        ),
+      );
+    }
+    actions.add(
       PlatformAlertDialogAction(
-        callback: () => Navigator.pop(context),
+        callback: () => Navigator.pop(
+          context,
+          true
+        ),
         widget: Text(defaultActionText),
       ),
-    ];
+    );
+
+    return actions;
   }
 }
 

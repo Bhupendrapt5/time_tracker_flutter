@@ -1,18 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:time_tracker/app/custom_widgts/platform_alert_dialog.dart';
 import 'package:time_tracker/app/services/auth.dart';
 
 class HomePageScreen extends StatelessWidget {
-
   final AuthBase autBase;
 
-  const HomePageScreen({Key key, @required this.autBase})
-      : super(key: key);
+  const HomePageScreen({Key key, @required this.autBase}) : super(key: key);
   Future<void> _signOut() async {
     try {
       await autBase.signOut();
       print('Sign out called');
     } catch (e) {
       print('error : ${e.toString()}');
+    }
+  }
+
+  Future _confirmSignOut(BuildContext context) async {
+    final didRequestSignOut = await PlatFormAlertDialogBox(
+      title: 'Logout',
+      content: 'You sure want to Logout?',
+      defaultActionText: 'Logout',
+      cancelActionText: 'Cancel',
+    ).show(context);
+    if (didRequestSignOut) {
+      _signOut();
     }
   }
 
@@ -23,7 +34,7 @@ class HomePageScreen extends StatelessWidget {
         title: Text('HomePage'),
         actions: [
           FlatButton(
-            onPressed: _signOut,
+            onPressed: () => _confirmSignOut(context),
             child: Text(
               'Logout',
               style: TextStyle(
